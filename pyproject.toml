@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "coursework4"
+version = "0.1.0"
+description = ""
+authors = ["tanjiro <counter23062001@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.2"
+pytest-cov = "^5.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
