@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 # from src.hh import HeadHunterAPI
 from src.vacancy import Vacancy
 import os
+from config import ABSPATH
 
 
 class JSON(ABC):
@@ -23,7 +24,7 @@ class JSONSaver(JSON):
     def __init__(self, filename):
         """ Конструктор для JSONSaver """
         self.filename = filename
-        self.path = os.path.abspath(f"../data/{self.filename}")
+        self.path = ABSPATH
 
     def add_vacancy(self, vacancy: Vacancy):
         """ Добавляет данные по вакансии в self.filename """
@@ -41,7 +42,7 @@ class JSONSaver(JSON):
                         data = []
             else:
                 data = []
-            new_data = {'Профессия': vacancy.name, 'Ссылка': vacancy.url,'Зарплата': vacancy.salary, 'Опыт': vacancy.experience, 'Город': vacancy.city}
+            new_data = {'name': vacancy.name, 'url': vacancy.url,'salary': vacancy.salary, 'experience': vacancy.experience, 'area': vacancy.area}
             data.append(new_data)
 
             # Записываем новые данные в файл
