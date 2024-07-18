@@ -29,18 +29,18 @@ class Vacancy:
                 except TypeError:
                     vacancy = None
                 try:
-                    experience = line['experience']['name']
+                    experience = line['experience']
                 except TypeError:
                     experience = None
                 try:
-                    city = line['area']['name']
+                    city = line['area']
                 except TypeError:
                     city = None
 
                 new_list.append(cls(vacancy, line['url'], salary, experience, city))
         return new_list
 
-    def __init__(self, name: str, url: str, salary: None | dict, experience: str, city: str, currency=CurrencyFromRUR()):
+    def __init__(self, name: str, url: str, salary: None | dict, experience: dict, area: dict, currency=CurrencyFromRUR()):
         """ Конструктор для Vacancy """
         self.name = name
         self.url = url
@@ -60,15 +60,16 @@ class Vacancy:
             if salary['currency'] == 'EUR':
                 salary['from'] = round(salary['from'] / currency.EUR)
                 salary['to'] = round(salary['to'] / currency.EUR)
+            salary['currency'] = 'RUR'
             self.salary = salary
         else:
             self.salary = 0
         self.experience = experience
-        self.city = city
+        self.area = area
 
     def __repr__(self):
         """ Для отладки и удобного представления экземпляра для пользователя """
-        return f'{self.name} /// Ссылка: {self.url} /// з/п: {self.get_salary_str()} /// Опыт: {self.experience} /// Город: {self.city}'
+        return f'{self.name} /// Ссылка: {self.url} /// з/п: {self.get_salary_str()} /// Опыт: {self.experience} /// Город: {self.area['name']}'
 
     def __eq__(self, other):
         """ Сравнивает по get_salary_for_sort """
@@ -104,6 +105,7 @@ class Vacancy:
                 return self.salary['to']
         return self.salary
 
+# vacancies_list.sort(reverse=True, key=lambda x: (x['Зарплата'],) if not x['Зарплата'] else (x['Зарплата']['from'], x['Зарплата']['to']))
     def get_salary(self) -> int:
         if self.salary:
             return self.salary['from']
