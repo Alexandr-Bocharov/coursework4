@@ -37,11 +37,12 @@ class Vacancy:
                 except TypeError:
                     city = None
 
-                new_list.append(cls(vacancy, line['url'], salary, experience, city))
+                new_list.append(cls(line['id'], vacancy, line['url'], salary, experience, city))
         return new_list
 
-    def __init__(self, name: str, url: str, salary: None | dict, experience: dict, area: dict, currency=CurrencyFromRUR()):
+    def __init__(self, id: int, name: str, url: str, salary: None | dict, experience: dict, area: dict, currency=CurrencyFromRUR()):
         """ Конструктор для Vacancy """
+        self.id = id
         self.name = name
         self.url = url
         if salary:
@@ -60,6 +61,9 @@ class Vacancy:
             if salary['currency'] == 'EUR':
                 salary['from'] = round(salary['from'] / currency.EUR)
                 salary['to'] = round(salary['to'] / currency.EUR)
+            if salary['currency'] == 'UZS':
+                salary['from'] = round(salary['from'] / currency.UZS)
+                salary['to'] = round(salary['to'] / currency.UZS)
             salary['currency'] = 'RUR'
             self.salary = salary
         else:
@@ -69,7 +73,7 @@ class Vacancy:
 
     def __repr__(self):
         """ Для отладки и удобного представления экземпляра для пользователя """
-        return f'{self.name} /// Ссылка: {self.url} /// з/п: {self.get_salary_str()} /// Опыт: {self.experience} /// Город: {self.area['name']}'
+        return f'{self.name} /// ID: {self.id} /// Ссылка: {self.url} /// з/п: {self.get_salary_str()} руб. /// Опыт: {self.experience['name']} /// Город: {self.area['name']}'
 
     def __eq__(self, other):
         """ Сравнивает по get_salary_for_sort """
