@@ -10,4 +10,5 @@ class CurrencyFromRUR:
         self.BUR = 0.037
         self.KZT = 5.42
         self.EUR = 0.010
+        self.UZS = 143.17
 
