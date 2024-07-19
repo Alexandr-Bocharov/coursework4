@@ -22,7 +22,7 @@ class HeadHunterAPI(Api):
         """ Конструктор для HeadHunterAPI """
         self.url = 'https://api.hh.ru/vacancies'
         self.headers = {'User-Agent': 'HH-User-Agent'}
-        self.params = {'text': '', 'page': 0, 'per_page': 100}
+        self.params = {'text': '', 'page': 0, 'per_page': 10}
         self.vacancies = []
 
     def load_vacancies(self, keyword):
@@ -35,13 +35,12 @@ class HeadHunterAPI(Api):
 
     def get_vacancies(self, keyword):
         self.params['text'] = keyword
-        while self.params.get('page') != 1:
+        while self.params.get('page') != 10:
             response = requests.get(self.url, headers=self.headers, params=self.params)
             vacancies = response.json()['items']
             self.vacancies += vacancies
             self.params['page'] += 1
         return self.vacancies
-
 
 
 
