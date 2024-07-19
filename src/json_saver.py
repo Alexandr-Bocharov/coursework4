@@ -21,9 +21,8 @@ class JSON(ABC):
 class JSONSaver(JSON):
     """ Класс для сохранения данных в json файл """
 
-    def __init__(self, filename):
+    def __init__(self):
         """ Конструктор для JSONSaver """
-        self.filename = filename
         self.path = ABSPATH
 
     def add_vacancy(self, vacancy: Vacancy):
@@ -42,7 +41,7 @@ class JSONSaver(JSON):
                         data = []
             else:
                 data = []
-            new_data = {'name': vacancy.name, 'url': vacancy.url,'salary': vacancy.salary, 'experience': vacancy.experience, 'area': vacancy.area}
+            new_data = {'id': vacancy.id, 'name': vacancy.name, 'url': vacancy.url,'salary': vacancy.salary, 'experience': vacancy.experience, 'area': vacancy.area}
             data.append(new_data)
 
             # Записываем новые данные в файл
@@ -52,23 +51,38 @@ class JSONSaver(JSON):
         except Exception as e:
             print(f'Возникла ошибка {type(e)}')
 
-    def delete_vacancy(self, vacancy: Vacancy):
-        """ Удаляет данные по вакансии из self.filename """
-        with open(self.filename, 'r') as file:
-            data = json.load(file)
+    def delete_vacancy(self, id: int):
+        """ Удаляет данные по вакансии если переданный id совпадает с id вакансии """
+        try:
+            with open(self.path, 'r') as file:
+                data = json.load(file)
 
-        new_data = []
-        vacancy_values = [el for el in vacancy.__dict__.values()]
+            ids = [int(el['id']) for el in data]
 
-        for line in data:
-            line_values = [el for el in line.values()]
-            if not line_values == vacancy_values:
-                new_data.append(line)
+            new_data = [el for el in data if int(el['id']) != id]
+
+            if id in ids:
+                print(f'Вакансия {id} удалена\n')
             else:
-                continue
+                print(f'Вакансия {id} не найдена в vacancies.json\n')
 
-        with open(self.filename, 'w') as file:
-            json.dump(new_data, file, ensure_ascii=False, indent=4)
+            with open(self.path, 'w') as file:
+                json.dump(new_data, file, ensure_ascii=False, indent=4)
+
+
+
+        except json.decoder.JSONDecodeError:
+            print('Файл vacancies.json не содержит ни одной вакансии\n')
+        # new_data = []
+        # vacancy_values = [el for el in vacancy.__dict__.values()]
+        #
+        # for line in data:
+        #     line_values = [el for el in line.values()]
+        #     if not line_values == vacancy_values:
+        #         new_data.append(line)
+        #     else:
+        #         continue
+
 
 
     def get_info_by_criterion(self, criterion: str):
@@ -77,7 +91,7 @@ class JSONSaver(JSON):
             data_by_criterion = []
             try:
                 for line in data:
-                    data_by_criterion.append(line[criterion.title()])
+                    data_by_criterion.append(line[criterion.lower()])
                 return data_by_criterion
             except KeyError:
                 return 'Такого критерия не существует'
